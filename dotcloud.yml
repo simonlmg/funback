@@ -1,5 +1,3 @@
 funback:
   approot: backend
   type: python
-db:
-  type: postgresql
