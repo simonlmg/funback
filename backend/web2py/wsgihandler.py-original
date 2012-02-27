@@ -32,15 +32,12 @@ sys.stdout=sys.stderr
 
 import gluon.main
 
-if __name__ == '__main__':
-    print ("intend to run locally, not!")
-else:
-    if LOGGING:
-        application = gluon.main.appfactory(wsgiapp=gluon.main.wsgibase,
+if LOGGING:
+    application = gluon.main.appfactory(wsgiapp=gluon.main.wsgibase,
                                         logfilename='httpserver.log',
                                         profilerfilename=None)
-    else:
-        application = gluon.main.wsgibase
+else:
+    application = gluon.main.wsgibase
 
 if SOFTCRON:
     from gluon.settings import global_settings
