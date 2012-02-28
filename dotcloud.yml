@@ -1,5 +1,5 @@
 www:
-  approot: backend
+  approot: web2py
   type: python
 db:
   type: postgresql
