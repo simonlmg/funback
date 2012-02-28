@@ -33,7 +33,7 @@ sys.stdout=sys.stderr
 import gluon.main
 
 if __name__ == '__main__':
-    print ('intend to run locally, not!')
+    print ('intend to run locally')
 else:
     print ('application variable created')
     if LOGGING:
