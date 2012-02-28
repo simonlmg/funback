@@ -1,4 +1,4 @@
-funback:
+www:
   approot: backend
   type: python
 db:
