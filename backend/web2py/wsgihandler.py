@@ -33,8 +33,9 @@ sys.stdout=sys.stderr
 import gluon.main
 
 if __name__ == '__main__':
-    print ("intend to run locally, not!")
+    print ('intend to run locally, not!')
 else:
+    print ('application variable created')
     if LOGGING:
         application = gluon.main.appfactory(wsgiapp=gluon.main.wsgibase,
                                         logfilename='httpserver.log',
