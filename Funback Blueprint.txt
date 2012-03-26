@@ -1,0 +1,86 @@
+### Funback Blueprint ###
+
+-------------- Functionality Outline --------------
+
+--- Registration Handling --- (b)
+1. email/pwd/captcha registration
+2. email confirmation and account creation
+
+--- Profile Editing --- (b)
+1. edit and save profile
+2. one for students, one for companies
+3. pic upload
+
+--- Event Creation --- (c)
+1. similar to profile setup
+2. both create and edit/save
+3. linked to companies
+4. pic/video upload
+5. invitation
+6. filtering/restriction
+
+--- Communication --- (b)
+1. private msgs
+2. invitation
+
+--- Event Actions --- (s)
+1. follow event
+2. share event
+3. register/enter event
+4. submit solutions
+
+--- Social Connections --- (b)
+1. subscribe companies/students
+2. connect companies/students
+
+--- Profile Listing --- (b)
+1. sort by name (b)
+2. sort by school (s)
+3. sort by majors (s)
+4. sort by reputation (s)
+5. sort by size (c)
+6. sort by industry (c)
+7. sort by activeness (c)
+8. special highlight (b)
+6. search (b)
+
+--- Event Listing ---
+1. show by tag
+2. show by industry
+3. special highlight
+4. show by activeness
+5. search
+
+--- Q&A (forum) ---
+1. third-party opensource options?
+
+--- Group --- (b)
+1. group creation
+2. add/remove members
+3. send msgs
+4. content creation (discussion, similar to Q&A?)
+
+--- Feeds --- (b)
+1. connection updates
+2. event updates
+3. question updates
+4. group updates 
+
+
+
+-------------- Component Outline --------------
+
+1. DB manager (Web2py default?)
+2. Account manager (Web2py default? but needs auditing)
+3. Social/Connection manager (handling both connect and subscribe)
+4. Content manager (handling all text inputs/outputs?)
+5. Profile managers
+6. Event manager
+7. Relation manager (companies/students <-> events, questions/discussions <-> events/groups, etc)
+8. In-site update manager
+9. Email update manager
+10. Data analytics suite (for mining the data)
+
+Need to draw a diagram to illustrate their relationships
+
+

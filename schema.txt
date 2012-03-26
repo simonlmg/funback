@@ -1,0 +1,48 @@
+# Database schema
+
+# Participant
+{Id, FirstName, LastName, Sex, Dob, Country, Email, Verified}
+
+# Login
+{Id, Email, Password}
+
+# Participant_Education {composite primary key on the first two cols?)
+{Id, Instituion, Start_Year, End_Year, Major}
+
+# Participant_Skill
+{Id, Skill, Level}
+
+# Participant_Honor (first-two-column composite primary key)
+{Id, Honor_Id, Year, Honor}
+
+# Participant_Experience
+{Id, Start_Date, End_Date, Employer, Description}
+
+--------------------------------------------------------------
+
+# Employer ('Size': 1 - 'Small (< 50)'; 2 - 'Medium (51 - 200)'; and so on)
+{Id, Name, Email, Country, Industry_1, Industry_2, Industry_3, Size, Description, Verified}
+
+# Employer_Honor (first-two-column primary key)
+{Id, Honor_Id, Year, Honor}
+
+--------------------------------------------------------------
+
+# Event (long text in 'Description' field?)
+{Id, Host, Start_Time, End_Time, Title, Description, Prize, Restriction}
+
+# Event_Result
+{Id, First_Place, Second_Place, Third_Place, Special_Mention}
+
+# Event_Participant (Performance issues?)
+{Event_Id, Team_Id, Participant_Id, Invited}
+
+--------------------------------------------------------------
+
+# Relationship ('Status': 0 - 'Blocked', 1 - 'Mutual', 2 - 'Subscribed')
+{Participant_Id, Connection_Id, Status}
+
+--------------------------------------------------------------
+
+# Files
+{File_Id, Url}
