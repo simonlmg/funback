@@ -1,0 +1,66 @@
+timestamp: 2012-04-19T13:08:10.462453
+CREATE TABLE user_login(
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(128),
+    last_name VARCHAR(128),
+    email VARCHAR(512),
+    password VARCHAR(512),
+    registration_key VARCHAR(512),
+    reset_password_key VARCHAR(512),
+    registration_id VARCHAR(512)
+);
+success!
+timestamp: 2012-04-19T13:08:10.490103
+CREATE TABLE user_group(
+    id SERIAL PRIMARY KEY,
+    role VARCHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2012-04-19T13:08:10.499963
+CREATE TABLE user_membership(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES user_login(id) ON DELETE CASCADE,
+    group_id INTEGER REFERENCES user_group(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2012-04-19T13:08:10.515459
+CREATE TABLE user_permission(
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES user_group(id) ON DELETE CASCADE,
+    name VARCHAR(512),
+    table_name VARCHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2012-04-19T13:08:10.527646
+CREATE TABLE user_event(
+    id SERIAL PRIMARY KEY,
+    time_stamp TIMESTAMP,
+    client_ip VARCHAR(512),
+    user_id INTEGER REFERENCES user_login(id) ON DELETE CASCADE,
+    origin VARCHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2012-04-19T13:08:10.540727
+CREATE TABLE auth_cas(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES user_login(id) ON DELETE CASCADE,
+    created_on TIMESTAMP,
+    service VARCHAR(512),
+    ticket VARCHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2012-04-19T13:08:10.553396
+CREATE TABLE participant(
+    id SERIAL PRIMARY KEY,
+    login_id INTEGER REFERENCES user_login(id) ON DELETE CASCADE,
+    first_name VARCHAR(128),
+    last_name VARCHAR(128),
+    sex VARCHAR(512),
+    dob DATE,
+    country VARCHAR(512)
+);
+success!

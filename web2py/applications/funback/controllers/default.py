@@ -10,8 +10,8 @@
 #########################################################################
 
 def index():
-    response.flash = "Welcome to funback!"
-    return dict(message=T('Hello from funback!'))
+    response.flash = "Welcome to Funback!"
+    return dict(message=T('Hello from Funback!'))
 
 def download():
     """

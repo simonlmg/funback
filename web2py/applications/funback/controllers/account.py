@@ -23,8 +23,13 @@ def register():
     http://..../[app]/account/register
     """
     
-    form = auth.register()
+    if (request.args(0) != 'prospect' and request.args(0) != 'prospector'):
+        redirect(URL(c='default', f='index'))
     
+    session.from_register = True
+    session.register_arg = request.args(0)
+    form = auth.register()
+       
     return dict(form=form)
 
 def verify_email():
@@ -89,6 +94,17 @@ def profile():
 #===============================================================================
 
 def registered():
-    if not request.function=='register' and not session.email:
-        redirect(URL('register'))
+    
+    logger.debug('from_register: %s and session.registered: %s' % (session.from_register, session.registered))
+
+    if not session.from_register:
+        logger.debug('request NOT from registration page')
+        session.from_register = False
+        redirect(URL(c='default', f='index'))
+    elif not session.registered_email:
+        logger.debug('request from registration page but form not processed')
+        session.from_register = False
+        session.registered = False
+        redirect(URL(f='register', args=[session.register_arg]))
+                
     return dict()

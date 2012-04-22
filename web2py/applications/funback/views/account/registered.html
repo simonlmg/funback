@@ -1,4 +1,7 @@
 <!-- View for registration confirmation page -->
 
 {{extend 'layout.html'}}
-<h3>Thanks! Please check for verification email at {{=session.email}}</h3>
+<div id="user_registered">
+
+<h3>Thanks! Please check for verification email at {{=session.registered_email}}</h3>
+</div>

@@ -1,21 +1,35 @@
-#########################################
-## database model for account services ##
-#########################################
+###########################################
+### database model for account services ###
+###########################################
 
 ## use PostgreSQL on dotcloud (staging/production)
 ##db = DAL("pgsql://root:kZ2AxFUntkfwlBGCEa1N@funback-Cilia.dotcloud.com:21133")
-
-## use PostgreSQL on localhost (testing/qa)
-db = DAL("postgres://cyan:opennow330@localhost/funback")
 
 ## setup logging facilities for debugging purposes
 import logging
 logger = logging.getLogger("web2py.app.funback")
 logger.setLevel(logging.DEBUG)
 
-#####################################
-## web2py authentication utilities ##
-#####################################
+## use PostgreSQL on localhost (testing/qa)
+db = DAL("postgres://cyan:opennow330@localhost/funback")
+
+########################
+### Custom Functions ###
+########################
+
+def grant_permissions(form):
+    logger.debug("permission granting reached")
+    group_id = auth.id_group(role=request.args(0))
+    logger.debug("group id for registrant: " + str(group_id))
+    logger.debug("user id for registrant: " + str(form.vars.id))
+    auth.add_membership(group_id, form.vars.id)
+    session.registered_email = form.vars.email
+    logger.debug("permission granted")
+
+
+#######################################
+### web2py authentication utilities ###
+#######################################
 
 from gluon.tools import Auth
 auth = Auth(db, hmac_key=Auth.get_or_create_key())
@@ -45,7 +59,17 @@ auth.settings.create_user_groups = False
 auth.settings.registration_requires_verification = True
 auth.settings.reset_password_requires_verification = True
 ## might need to change this for company users
-#auth.settings.registration_requires_approval = False 
+#auth.settings.registration_requires_approval = False
+
+## specify the page workflow for registration process
+auth.settings.register_onaccept.append(grant_permissions)
+auth.settings.register_next = URL('registered')
+auth.settings.verify_email_onaccept.append(lambda user: mail.send(to=user.email, subject='Welcome to Funback', 
+                                                                  message='Hello %s' % user.email))
+auth.settings.verify_email_next = URL('profile')
+
+## specify the page workflow after a user is logged in
+auth.settings.logged_url = URL('profile') # for now
 
 ## set the content of the verification email
 auth.messages.verify_email = 'Please click on the link: http://' + \
@@ -74,9 +98,9 @@ db.user_login.password.requires = [IS_NOT_EMPTY(),
 #auth.add_group('prospect', 'participants of events')
 #auth.add_group('prospector', 'hosts of events')
 
-######################
-## Custom DB tables ##
-######################
+########################
+### Custom DB tables ###
+########################
 
 #db.define_table('login',
 #    Field('email', length=96, required=True, unique=True),
