@@ -1060,3 +1060,6 @@
 127.0.0.1, 2012-04-22 20:50:27, GET, /funback/account/register/prospect, HTTP/1.1, 200, 0.055808
 127.0.0.1, 2012-04-22 20:51:02, POST, /funback/account/register/prospect, HTTP/1.1, 303, 3.487346
 127.0.0.1, 2012-04-22 20:51:02, GET, /funback/account/registered, HTTP/1.1, 200, 0.038659
+127.0.0.1, 2012-04-22 20:55:57, GET, /funback/account/register/prospector, HTTP/1.1, 200, 0.061780
+127.0.0.1, 2012-04-22 20:56:07, GET, /funback/account/registered, HTTP/1.1, 200, 0.064553
+127.0.0.1, 2012-04-22 20:56:23, GET, /funback/account/register/prospector, HTTP/1.1, 200, 0.052454

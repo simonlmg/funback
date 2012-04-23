@@ -104,7 +104,6 @@ def registered():
     elif not session.registered_email:
         logger.debug('request from registration page but form not processed')
         session.from_register = False
-        session.registered = False
         redirect(URL(f='register', args=[session.register_arg]))
                 
     return dict()

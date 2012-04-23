@@ -85,6 +85,7 @@ auth.settings.logged_url = URL('profile') # for now
 
 ## set some registration labels
 auth.messages.verify_password_comment = 'Please re-type your password'
+messages.verify_email_subject = 'Email Verification'
 
 ## set the content of the verification email
 auth.messages.verify_email = 'Please click on the link: http://' + \
