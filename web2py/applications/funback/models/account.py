@@ -13,6 +13,7 @@ logger.setLevel(logging.DEBUG)
 ## use PostgreSQL on localhost (testing/qa)
 db = DAL("postgres://cyan:opennow330@localhost/funback")
 
+
 ########################
 ### Custom Functions ###
 ########################
@@ -25,7 +26,17 @@ def grant_permissions(form):
     auth.add_membership(group_id, form.vars.id)
     session.registered_email = form.vars.email
     logger.debug("permission granted")
-
+    
+def program_login(user):
+    logger.debug("log in user programmatically")
+    logger.debug("temporarily remove CRYPT validator on 'password' filed of 'user_login' table")
+    ## assuming the last added validator is CRYPT
+    crypt_validator = db.user_login.password.requires.pop()
+    logger.debug("manual login")
+    auth.login_bare(user.email, user.password)
+    logger.debug("re-add CRYPT validator")
+    db.user_login.password.requires.append(crypt_validator)
+    
 
 #######################################
 ### web2py authentication utilities ###
@@ -37,7 +48,7 @@ auth = Auth(db, hmac_key=Auth.get_or_create_key())
 ## configure email
 mail = auth.settings.mailer
 mail.settings.server = 'smtp.gmail.com:587'
-mail.settings.sender = 'funback.message@gmail.com'
+mail.settings.sender = 'Funback Messsage <funback.message@gmail.com>'
 mail.settings.login = 'funback.message:opennow123'
 
 ## for the use of reCAPTCHA (with publicly visible site only)
@@ -64,6 +75,7 @@ auth.settings.reset_password_requires_verification = True
 ## specify the page workflow for registration process
 auth.settings.register_onaccept.append(grant_permissions)
 auth.settings.register_next = URL('registered')
+auth.settings.verify_email_onaccept.append(program_login)
 auth.settings.verify_email_onaccept.append(lambda user: mail.send(to=user.email, subject='Welcome to Funback', 
                                                                   message='Hello %s' % user.email))
 auth.settings.verify_email_next = URL('profile')
@@ -71,12 +83,14 @@ auth.settings.verify_email_next = URL('profile')
 ## specify the page workflow after a user is logged in
 auth.settings.logged_url = URL('profile') # for now
 
+## set some registration labels
+auth.messages.verify_password_comment = 'Please re-type your password'
+
 ## set the content of the verification email
 auth.messages.verify_email = 'Please click on the link: http://' + \
-     request.env.http_host + \
-     URL(r=request, c='account', f='verify_email') + \
-     '/%(key)s to verify your email address'
-logger.debug("verification email content: %s" % auth.messages.verify_email)
+                            request.env.http_host + \
+                            URL(r=request, c='account', f='verify_email') + \
+                            '/%(key)s to verify your email address'
 
 ## customize the Auth tables
 ## abandon (but not remove) 'first_name' and 'last_name' from user_login table
@@ -85,18 +99,19 @@ db.user_login.first_name.writable = db.user_login.last_name.writable = False
 db.user_login.first_name.readable = db.user_login.last_name.readable = False
 ## set the email requirement
 db.user_login.email.requires = [IS_NOT_EMPTY(), 
-                             IS_EMAIL(),
-                             IS_NOT_IN_DB(db, 'user_login.email')]
+                                IS_EMAIL(), 
+                                IS_NOT_IN_DB(db, 'user_login.email')]
 #forced='^.*\.edu(|\..*)$', error_message='Email must be an .edu address' 
  
 ## set the password requirement
 db.user_login.password.requires = [IS_NOT_EMPTY(), 
-                                IS_STRONG(min=7, special=0, upper=0, number=0, error_message='Minimum 7 characters'), 
-                                CRYPT()]
+                                   IS_STRONG(min=7, special=0, upper=0, number=0, error_message='Minimum 7 characters'), 
+                                   CRYPT()]
 
 ## setup the user group structure (should be setup one-for-all outside the app)
 #auth.add_group('prospect', 'participants of events')
 #auth.add_group('prospector', 'hosts of events')
+
 
 ########################
 ### Custom DB tables ###
