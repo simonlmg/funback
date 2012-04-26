@@ -11,9 +11,10 @@ logger = logging.getLogger("web2py.app.funback")
 logger.setLevel(logging.DEBUG)
 
 ## use PostgreSQL on localhost (testing/qa)
-db = DAL("postgres://cyan:opennow330@localhost/funback")
-
-
+#db = DAL("postgres://cyan:opennow330@localhost/funback")
+db = DAL('sqlite://storage.PostgreSQL')
+from gluon.tools import Crud
+crud = Crud(db)
 ########################
 ### Custom Functions ###
 ########################
@@ -85,7 +86,7 @@ auth.settings.logged_url = URL('profile') # for now
 
 ## set some registration labels
 auth.messages.verify_password_comment = 'Please re-type your password'
-messages.verify_email_subject = 'Email Verification'
+auth.messages.verify_email_subject = 'Email Verification'
 
 ## set the content of the verification email
 auth.messages.verify_email = 'Please click on the link: http://' + \
@@ -125,15 +126,59 @@ db.user_login.password.requires = [IS_NOT_EMPTY(),
 #db.login.email.requires=[IS_EMAIL(), IS_NOT_IN_DB(db, 'login.email')]
 #db.login.pwd.requires=[IS_NOT_EMPTY(), IS_STRONG(min=6, special=0, upper=1), CRYPT()]
 
-db.define_table('participant',
-    Field('login_id', db.user_login, readable=False, writable=False),
-    Field('first_name', length=128, required=True),
-    Field('last_name', length=128, required=True),
-    Field('sex', required=True),
-    Field('dob', 'date'),
-    Field('country'),
-    format='%(first_name)s %(last_name)s')
+#db.define_table('participant',
+#    Field('login_id', db.user_login, readable=False, writable=False),
+#    Field('first_name', length=128, required=True),
+#   Field('last_name', length=128, required=True),
+#    Field('sex', required=True),
+#    Field('dob', 'date'),
+#    Field('country'),
+#    format='%(first_name)s %(last_name)s')
 
-db.participant.sex.requires = IS_IN_SET(['male','female'])
-db.participant.country.requires = IS_IN_SET(['United States','United Kingdom'])
-db.participant.login_id.requires = IS_IN_DB(db, db.user_login.id, '%(email)s')
+#db.participant.sex.requires = IS_IN_SET(['male','female'])
+#db.participant.country.requires = IS_IN_SET(['United States','United Kingdom'])
+#db.participant.login_id.requires = IS_IN_DB(db, db.user_login.id, '%(email)s')
+
+
+
+
+
+
+
+
+
+db.define_table('participant',
+    Field('user_id', db.user_login,writable=False,readable=False),  
+    Field('Sex',length=1,requires=IS_IN_SET({'M': 'Male', 'F': 'Female'})),
+    Field('Dob','date',requires=IS_NOT_EMPTY(),widget=SQLFORM.widgets.date.widget),
+    Field('Country',requires = IS_IN_SET(COUNTRIES)),
+    format='%(First_Name)s %(Last_Name)s')
+
+db.participant.user_id.requires=[IS_NOT_EMPTY(),IS_NOT_IN_DB(db,db.participant.user_id)]
+db.participant.id.writable=db.participant.id.readable=False
+
+db.define_table('participant_edu',
+    Field('user_id', db.user_login,writable=False,readable=False,requires=IS_NOT_EMPTY()),  
+    Field('Institution',length=100,requires=IS_NOT_EMPTY()),
+    Field('Start_Year','date'),
+    Field('End_Year','date'),
+    Field('Major',length=100)
+)
+db.participant_edu.id.writable=db.participant_edu.id.readable=False
+
+db.define_table('participant_skill',
+    Field('user_id', db.user_login,writable=False,readable=False,requires=IS_NOT_EMPTY()),  
+    Field('Skill',length=100,requires=IS_NOT_EMPTY()),
+    Field('Level',length=100)
+)
+db.participant_skill.id.writable=db.participant_skill.id.readable=False
+
+db.define_table('participant_exp',
+    Field('user_id', db.user_login,writable=False,readable=False,requires=IS_NOT_EMPTY()),    
+    Field('Start_Date','date'),
+    Field('End_Date','date'),
+    Field('Employer',length=100,requires=IS_NOT_EMPTY()),
+    Field('Description',length=200),
+    Field('Title',length=100)
+)
+db.participant_exp.id.writable=db.participant_exp.id.readable=False

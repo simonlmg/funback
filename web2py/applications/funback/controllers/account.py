@@ -67,12 +67,6 @@ def change_password():
     """
     return dict(form=auth.change_password())
 
-def profile():
-    """
-    exposes:
-    http://..../[app]/account/profile
-    """
-    return dict(form=auth.profile())
 
 
 #===============================================================================
@@ -107,3 +101,41 @@ def registered():
         redirect(URL(f='register', args=[session.register_arg]))
                 
     return dict()
+
+
+@auth.requires_login()
+def profile():
+    participant=db(db.participant.user_id==auth.user_id).select().first()
+    if(participant==None):
+        db.participant.user_id.default=auth.user_id
+        form=crud.create(db.participant,next=URL('education'))
+    else:
+        crud.settings.update_deletable = False
+        form=crud.update(db.participant,participant.id,next=URL('education'))
+    return dict(form=form)
+    
+    
+    
+@auth.requires_login()
+def education():
+    edu=crud.select(
+       db.participant_edu,db.participant_edu.user_id==auth.user_id,orderby=db.participant_edu.Start_Year)
+    db.participant_edu.user_id.default=auth.user_id
+    form=crud.create(db.participant_edu,next=URL('education'))
+    return dict(eduinfo=edu,form=form)
+    
+@auth.requires_login()
+def skills():
+    skills=crud.select(
+       db.participant_skill,db.participant_skill.user_id==auth.user_id)
+    db.participant_skill.user_id.default=auth.user_id
+    form=crud.create(db.participant_skill,next=URL('skills'))
+    return dict(skills=skills,form=form)
+    
+@auth.requires_login()
+def experience():
+    exp=crud.select(
+       db.participant_exp,db.participant_exp.user_id==auth.user_id,orderby=db.participant_exp.Start_Date)
+    db.participant_exp.user_id.default=auth.user_id
+    form=crud.create(db.participant_exp,next=URL('experience'))
+    return dict(exp=exp,form=form)
